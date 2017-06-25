@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
+import { AngularFireDatabase, FirebaseListObservable,FirebaseObjectObservable } from 'angularfire2/database';
 import { AngularFireAuth } from 'angularfire2/auth';
+
 import {Observable} from 'rxjs/Observable';
 import * as firebase from 'firebase/app';
 
@@ -12,8 +13,8 @@ import * as firebase from 'firebase/app';
 })
 export class AppComponent {
 
-
-user: Observable<firebase.User>;
+  listings: FirebaseObjectObservable<any>;
+  user: Observable<firebase.User>;
   items: FirebaseListObservable<any[]>;
   msgVal: string = '';
 
@@ -25,11 +26,15 @@ user: Observable<firebase.User>;
     });
 
     this.user = this.afAuth.authState;
+     this.af.object('/messages/').subscribe(listings => {
+      console.log(listings);
+    });
 
   }
 
   login() {
     this.afAuth.auth.signInAnonymously();
+    console.log(this.listings);
 }
 
 logout() {
@@ -40,4 +45,10 @@ Send(desc: string) {
     this.items.push({ message: desc});
     this.msgVal = '';
 }
+}
+interface Listing 
+{
+$key?:string;
+message?:string;
+
 }
